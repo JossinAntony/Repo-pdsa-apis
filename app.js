@@ -37,6 +37,24 @@ Mongoose.connect('mongodb://localhost:27017/SurveyDB', { useNewUrlParser: true }
 
 //Mongoose.connect('mongodb+srv://jossin:jossin@cluster0-arjkd.mongodb.net/test?retryWrites=true&w=majority');
 
+const SurveySchema = Mongoose.model('surveyees',{
+    pname:String,
+    pge:String,
+    padhr:String,
+    pmob:String,
+    pmail:String,
+    phname:String,
+    pward:String,
+    ppnchyth:String,
+    pthlk:String,
+    pdstrct:String
+    });
+    
+const SurveyorSchema = Mongoose.model('surveyors',{
+    uname:String,
+    upass:String
+});
+    
 
 app.get('/',(req,res)=>{
     res.render('index');
@@ -44,4 +62,4 @@ app.get('/',(req,res)=>{
 
 app.listen(process.env.PORT || 3052,()=>{
     console.log("Server running at http://localhost:3052")
-})
+});
