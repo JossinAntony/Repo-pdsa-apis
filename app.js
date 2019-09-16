@@ -54,8 +54,44 @@ const SurveyorSchema = Mongoose.model('surveyors',{
     uname:String,
     upass:String
 });
-    
 
+const PeopleSchema = Mongoose.model('peoples',{
+    pname:String,
+    pge:String,
+    padhr:String,
+    });
+// ****************************************************
+//-----APIs------------
+//1. Save people
+app.post('/savePeopleAPI',(req, res) => {
+    // var person = new formSchema({'sname':req.query.sname, 'saddr':req.query.saddr, 'sgender':req.query.sgender, 'sdstrct':req.query.sdstrct, 'sbday':req.query.sbday, 'smob':req.query.smob, 'smail':req.query.smail, 'spass':req.query.spass, 'scpass':req.query.scpass});
+    var people = new PeopleSchema(req.body);
+    var result = people.save((error, data)=>{
+        if (error){
+            throw error;
+        }else{
+            //res.send("<script>alert('New record created!')</script>");
+            res.send(data);
+            console.log(data); 
+        }
+    });
+})
+
+const savePeopleAPILink = 'http://localhost:3052/savePeopleAPI';
+
+//2. Retrive people
+app.get('/retrievePeopleAPI',(req,res)=>{
+    var retrieve = PeopleSchema.find((error,data)=>{
+        if (error){
+            throw error;
+        }else{
+            res.send(data);
+        }
+    });
+});
+
+const retrievePeopleAPILink = 'http://localhost:3052/retrievePeopleAPI';
+// ****************************************************
 app.get('/',(req,res)=>{
     res.render('index');
 });
