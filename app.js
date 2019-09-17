@@ -59,13 +59,35 @@ const PeopleSchema = Mongoose.model('peoples',{
     pname:String,
     pge:String,
     padhr:String,
+    children: [
+        {
+            cname: String,
+            cge: String
+        }
+      ]
     });
+
+// const PeopleSchema = Mongoose.model('peoples',{
+//         pname:String,
+//         pge:String,
+//         padhr:String,
+//         children: [
+//             children
+//           ]
+//         });
+
+
+// const children = Mongoose.model('childs',{
+//     cname: String,
+//     cge: String
+// });
 // ****************************************************
 //-----APIs------------
 //1. Save people
 app.post('/savePeopleAPI',(req, res) => {
     // var person = new formSchema({'sname':req.query.sname, 'saddr':req.query.saddr, 'sgender':req.query.sgender, 'sdstrct':req.query.sdstrct, 'sbday':req.query.sbday, 'smob':req.query.smob, 'smail':req.query.smail, 'spass':req.query.spass, 'scpass':req.query.scpass});
     var people = new PeopleSchema(req.body);
+    console.log(req.body);
     var result = people.save((error, data)=>{
         if (error){
             throw error;
@@ -86,6 +108,7 @@ app.get('/retrievePeopleAPI',(req,res)=>{
             throw error;
         }else{
             res.send(data);
+            console.log(data);
         }
     });
 });
