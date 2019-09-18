@@ -38,9 +38,23 @@ Mongoose.connect('mongodb://localhost:27017/SurveyDB', { useNewUrlParser: true }
 //Mongoose.connect('mongodb+srv://jossin:jossin@cluster0-arjkd.mongodb.net/test?retryWrites=true&w=majority');
 
 const SurveySchema = Mongoose.model('surveyees',{
+    sname:String,
+    sdesig:String,
+    sdate:String,
+
     pname:String,
     pge:String,
-    padhr:String,
+    padhr: String,
+    phname: String,
+    pward: String,
+    ppnchyth: String,
+    pthlk: String,
+    pdstrct: String,
+
+    pmail: String,
+    pmob: String,
+
+
     pmob:String,
     pmail:String,
     phname:String,
