@@ -41,6 +41,8 @@ const SurveySchema = Mongoose.model('surveyees',{
     sname:String,
     sdesig:String,
     sdate:String,
+    dcode:String,
+    dplace:String,
 
     pname:String,
     pge:String,
@@ -54,14 +56,36 @@ const SurveySchema = Mongoose.model('surveyees',{
     pmail: String,
     pmob: String,
 
+    casualities: [
+        {
+            casStatus: String,
+            casRln: String,
+            casName: String,
+            casAge: String
+        }
+    ],
 
-    pmob:String,
-    pmail:String,
-    phname:String,
-    pward:String,
-    ppnchyth:String,
-    pthlk:String,
-    pdstrct:String
+    assets: [
+        {
+            astTyp: String,
+            astStatus: String,
+            astArea: String,
+            astBldno: String
+        }
+    ],
+
+    vehicles: [
+        {
+            vhlTyp: String,
+            vhlStatus: String,
+            vhlMake: String,
+            vhlMdl: String,
+            vhlNo: String,
+            vhlIns: String
+        }
+    ],
+
+    cmnts: String
     });
     
 const SurveyorSchema = Mongoose.model('surveyors',{
@@ -81,26 +105,13 @@ const PeopleSchema = Mongoose.model('peoples',{
       ]
     });
 
-// const PeopleSchema = Mongoose.model('peoples',{
-//         pname:String,
-//         pge:String,
-//         padhr:String,
-//         children: [
-//             children
-//           ]
-//         });
 
-
-// const children = Mongoose.model('childs',{
-//     cname: String,
-//     cge: String
-// });
 // ****************************************************
 //-----APIs------------
 //1. Save people
 app.post('/savePeopleAPI',(req, res) => {
     // var person = new formSchema({'sname':req.query.sname, 'saddr':req.query.saddr, 'sgender':req.query.sgender, 'sdstrct':req.query.sdstrct, 'sbday':req.query.sbday, 'smob':req.query.smob, 'smail':req.query.smail, 'spass':req.query.spass, 'scpass':req.query.scpass});
-    var people = new PeopleSchema(req.body);
+    var people = new SurveySchema(req.body);
     console.log(req.body);
     var result = people.save((error, data)=>{
         if (error){
@@ -128,6 +139,28 @@ app.get('/retrievePeopleAPI',(req,res)=>{
 });
 
 const retrievePeopleAPILink = 'http://localhost:3052/retrievePeopleAPI';
+
+//3. Retrieve a single person from databse using name.
+app.post('/retrievePersonByNameAPI',(req,res)=>{
+    var name = req.body.pname;
+    SurveySchema.find({pname:name},(error,data)=>{
+        if(error){
+            throw error;
+        }else {
+            //console.log(data);
+            res.send(data);
+        }
+    })
+})
+
+const retrievePersonByNameAPILink = 'http://localhost:3052/retrievePersonByNameAPI';
+
+
+
+
+
+
+
 // ****************************************************
 app.get('/',(req,res)=>{
     res.render('index');
