@@ -128,7 +128,7 @@ const savePeopleAPILink = 'http://localhost:3052/savePeopleAPI';
 
 //2. Retrive people
 app.get('/retrievePeopleAPI', (req, res) => {
-    var retrieve = PeopleSchema.find((error, data) => {
+    var retrieve = SurveySchema.find((error, data) => {
         if (error) {
             throw error;
         } else {
