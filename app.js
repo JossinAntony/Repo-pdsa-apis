@@ -1,19 +1,19 @@
-const Express=require('express');
+const Express = require('express');
 const Mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const request = require('request');
 
-var app=new Express();
+var app = new Express();
 
 app.set('view engine', 'ejs');
-app.use(Express.static(__dirname+"/public"));
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(Express.static(__dirname + "/public"));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
-   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200' );
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
     // res.setHeader('Access-Control-Allow-Origin', 'https://studentdb1-jossin.herokuapp.com' ); // request origin/ name of app.
 
     // Request methods you wish to allow
@@ -33,19 +33,19 @@ app.use(function (req, res, next) {
 Mongoose.connect('mongodb://localhost:27017/SurveyDB', { useNewUrlParser: true }, (err, res) => {
     if (err) throw err;
     //console.log('Database online');
-    });
+});
 
 //Mongoose.connect('mongodb+srv://jossin:jossin@cluster0-arjkd.mongodb.net/test?retryWrites=true&w=majority');
 
-const SurveySchema = Mongoose.model('surveyees',{
-    sname:String,
-    sdesig:String,
-    sdate:String,
-    dcode:String,
-    dplace:String,
+const SurveySchema = Mongoose.model('surveyees', {
+    sname: String,
+    sdesig: String,
+    sdate: String,
+    dcode: String,
+    dplace: String,
 
-    pname:String,
-    pge:String,
+    pname: String,
+    pge: String,
     padhr: String,
     phname: String,
     pward: String,
@@ -86,40 +86,40 @@ const SurveySchema = Mongoose.model('surveyees',{
     ],
 
     cmnts: String
-    });
-    
-const SurveyorSchema = Mongoose.model('surveyors',{
-    uname:String,
-    upass:String
 });
 
-const PeopleSchema = Mongoose.model('peoples',{
-    pname:String,
-    pge:String,
-    padhr:String,
+const SurveyorSchema = Mongoose.model('surveyors', {
+    uname: String,
+    upass: String
+});
+
+const PeopleSchema = Mongoose.model('peoples', {
+    pname: String,
+    pge: String,
+    padhr: String,
     children: [
         {
             cname: String,
             cge: String
         }
-      ]
-    });
+    ]
+});
 
 
 // ****************************************************
 //-----APIs------------
 //1. Save people
-app.post('/savePeopleAPI',(req, res) => {
+app.post('/savePeopleAPI', (req, res) => {
     // var person = new formSchema({'sname':req.query.sname, 'saddr':req.query.saddr, 'sgender':req.query.sgender, 'sdstrct':req.query.sdstrct, 'sbday':req.query.sbday, 'smob':req.query.smob, 'smail':req.query.smail, 'spass':req.query.spass, 'scpass':req.query.scpass});
     var people = new SurveySchema(req.body);
     console.log(req.body);
-    var result = people.save((error, data)=>{
-        if (error){
+    var result = people.save((error, data) => {
+        if (error) {
             throw error;
-        }else{
+        } else {
             //res.send("<script>alert('New record created!')</script>");
             res.send(data);
-            console.log(data); 
+            console.log(data);
         }
     });
 })
@@ -127,11 +127,11 @@ app.post('/savePeopleAPI',(req, res) => {
 const savePeopleAPILink = 'http://localhost:3052/savePeopleAPI';
 
 //2. Retrive people
-app.get('/retrievePeopleAPI',(req,res)=>{
-    var retrieve = PeopleSchema.find((error,data)=>{
-        if (error){
+app.get('/retrievePeopleAPI', (req, res) => {
+    var retrieve = PeopleSchema.find((error, data) => {
+        if (error) {
             throw error;
-        }else{
+        } else {
             res.send(data);
             console.log(data);
         }
@@ -141,12 +141,12 @@ app.get('/retrievePeopleAPI',(req,res)=>{
 const retrievePeopleAPILink = 'http://localhost:3052/retrievePeopleAPI';
 
 //3. Retrieve a single person from databse using name.
-app.post('/retrievePersonByNameAPI',(req,res)=>{
+app.post('/retrievePersonByNameAPI', (req, res) => {
     var name = req.body.pname;
-    SurveySchema.find({pname:name},(error,data)=>{
-        if(error){
+    SurveySchema.find({ pname: name }, (error, data) => {
+        if (error) {
             throw error;
-        }else {
+        } else {
             //console.log(data);
             res.send(data);
         }
@@ -155,17 +155,66 @@ app.post('/retrievePersonByNameAPI',(req,res)=>{
 
 const retrievePersonByNameAPILink = 'http://localhost:3052/retrievePersonByNameAPI';
 
+//4. delete person API
+app.post('/deletePersonAPI', (req, res) => {
+    var id = req.body._id;
+    SurveySchema.remove({ _id: id }, (error, data) => {
+        if (error) {
+            throw error;
+        } else {
+            //res.send(data);
+            res.send({message:'success'});
+        }
+    })
+})
 
+const deletePersonAPILink = 'http://localhost:3052/deletePersonAPI';
 
+//5. update person API
+// app.post('/updatePersonAPI',(req,res)=>{
+//     var person = req.body;
+//     var personId = req.body._id;
+//     var casualitiesId = req.body.casualities._id;
+//     SurveySchema.update({_id:personId},{$set:{sname:person.sname,
+//         sdesig: person.sdesig,
+//         sdate: person.sdate,
+//         dcode: person.dcode,
+//         dplace: person.dplace,
 
+//         pname: person.pname,
+//         pge: person.pge,
+//         padhr: person.padhr,
+//         phname: person.phname,
+//         pward: person.pward,
+//         ppnchyth: person.ppnchyth,
+//         pthlk: person.pthlk,
+//         pdstrct: person.pdstrct,
+    
+//         pmail: person.pmail,
+//         pmob: person.pmob,
 
+//         casualities: person.casualities,
+//         assets: person.assets,
+//         vehicles: person.vehicles,
+//         cmnts: person.cmnts
+//     }},(error,data)=>{
+//         if(error){
+//             throw error;
+//             res.send (error);
+//         }else{
+//             res.send({message:'success'});
+//             console.log(data);
+//         }
+//     });
+//     });
 
+const updatePersonAPILink = 'http://localhost:3052/updatePersonAPI';
 
 // ****************************************************
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     res.render('index');
 });
 
-app.listen(process.env.PORT || 3052,()=>{
+app.listen(process.env.PORT || 3052, () => {
     console.log("Server running at http://localhost:3052")
 });
