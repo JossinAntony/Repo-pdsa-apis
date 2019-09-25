@@ -15,7 +15,7 @@ app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
     // ++change here++
-   // res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+    //res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
      res.setHeader('Access-Control-Allow-Origin', 'https://pdsa-app.herokuapp.com' ); // request origin/ name of app.
 
     // Request methods you wish to allow
@@ -89,7 +89,7 @@ const SurveySchema = Mongoose.model('surveyees', {
     cmnts: String
 });
 
-const SurveyorSchema = Mongoose.model('surveyors', {
+const userSchema = Mongoose.model('users', {
     uname: String,
     upass: String
 });
@@ -164,7 +164,7 @@ app.post('/deletePersonAPI', (req, res) => {
             throw error;
         } else {
             //res.send(data);
-            res.send({message:'success'});
+            res.send({ message: 'success' });
         }
     })
 })
@@ -190,7 +190,7 @@ const deletePersonAPILink = 'http://localhost:3052/deletePersonAPI';
 //         ppnchyth: person.ppnchyth,
 //         pthlk: person.pthlk,
 //         pdstrct: person.pdstrct,
-    
+
 //         pmail: person.pmail,
 //         pmob: person.pmob,
 
@@ -209,7 +209,31 @@ const deletePersonAPILink = 'http://localhost:3052/deletePersonAPI';
 //     });
 //     });
 
-const updatePersonAPILink = 'http://localhost:3052/updatePersonAPI';
+//const updatePersonAPILink = 'http://localhost:3052/updatePersonAPI';
+
+//5. search login credentials
+app.get('/searchLogInCredentialsAPI', (req, res) => {
+    var username = req.query.username;
+    var pwd = req.query.pwd;
+    userSchema.find({ $and: [{ uname: username }, { upass: pwd }] }, (error, response) => {
+        if (error) {
+            throw error;
+            res.send(error);
+        }
+        else {
+            if (response.length <= 0) {
+                res.send({ message: 'no access' });
+            } else {
+                if (response[0].uname == "admin") {
+                    res.send({ message: 'admin' });
+                }
+                else {
+                    res.send({ message: 'access' });
+                }
+            }
+        } 0
+    })
+});
 
 // ****************************************************
 app.get('/', (req, res) => {
